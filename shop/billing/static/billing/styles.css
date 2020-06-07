@@ -1,0 +1,19 @@
+.cena
+{
+	background-image: url('images/cena.jpg');
+	background-repeat: no-repeat;
+	background-size:cover;
+	height: 100vh;
+}
+.rd
+{
+	color: red;
+	font-size: 36px;
+	text-align: center;
+}
+body
+{
+	 background: linear-gradient(90deg, rgba(54,217,182,1) 0%, rgba(32,152,126,1) 43%, rgba(0,212,255,1) 100%); 
+	/*background: linear-gradient(90deg, #99bbff 0%, #4d88ff 43%, #8080ff 100%);*/
+	background-color:#b3b3ff;
+}

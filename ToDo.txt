@@ -1,0 +1,14 @@
+[x] Run pipenv shell
+[x] pipenv install django
+[x] django-admin startproject shop
+[x] python manage.py startapp billing
+[x] pipenv install pymysql
+[x] update settings.py databases part 
+[x] update __init__.py for pymysql
+[x] Create database (shop) in sql server
+[x] python manage.py migrate 
+[x] python manage.py createsuperuser and create kitchu,pword:km
+[x] create folder templates/billing inside the billing app and put the base and index files there
+[x] create folder static/billing inside the billing app and put a customized styles.css and  create an images folder
+[x] create/edit urls.py file in billing and shop
+[x] create the index view in views.py
