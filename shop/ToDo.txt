@@ -13,4 +13,4 @@
 [x] create/edit urls.py file in billing and shop
 [x] create the index view in views.py
 [x] put app_name="billing" on top of urls.py of billing app to avoid 'no reverse match' error while redirecting like,
-    return redirect('music:index')
+    return redirect('billing:index')

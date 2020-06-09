@@ -1,19 +1,33 @@
-.cena
-{
-	background-image: url('images/cena.jpg');
-	background-repeat: no-repeat;
-	background-size:cover;
-	height: 100vh;
+.cena {
+  background-image: url("images/cena.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100vh;
 }
-.rd
-{
-	color: red;
-	font-size: 36px;
-	text-align: center;
+.rd {
+  color: red;
+  font-size: 36px;
+  text-align: center;
 }
-body
-{
-	 background: linear-gradient(90deg, rgba(54,217,182,1) 0%, rgba(32,152,126,1) 43%, rgba(0,212,255,1) 100%); 
-	/*background: linear-gradient(90deg, #99bbff 0%, #4d88ff 43%, #8080ff 100%);*/
-	background-color:#b3b3ff;
+body {
+  background: linear-gradient(
+    90deg,
+    rgb(62, 65, 64) 0%,
+    rgb(141, 80, 211) 43%,
+    rgb(109, 93, 110) 100%
+  );
+  /*background: linear-gradient(90deg, #99bbff 0%, #4d88ff 43%, #8080ff 100%);*/
+  background-color: #b3b3ff;
+}
+
+.loginbox {
+  border: 2px solid black;
+  background: linear-gradient(
+    90deg,
+    rgb(141, 77, 96) 0%,
+    rgb(221, 121, 208) 43%,
+    rgb(219, 127, 84) 100%
+  );
+  margin-top: 5%;
+  border-radius: 5%;
 }
