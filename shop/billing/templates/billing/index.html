@@ -1,7 +1,7 @@
 {% extends 'billing/base.html' %} 
 {% block title %}Our Home{% endblock %} 
-{%load static %}
-{% block user %}{{user}}{% endblock %} 
+{%load static %} 
+{% block user %} {{user}}{% endblock %} 
 {% block body %}
 <div class="container container-fluid">
   <!--
@@ -9,4 +9,7 @@
 	<h1 class='rd carousel-caption'>{{ msg }}</h1> -->
   <h1>Hello</h1>
 </div>
+{% endblock %} 
+{%block loutslot %}
+<a class="dropdown-item" href="{% url 'billing:index' %}">Logout</a>
 {% endblock %}

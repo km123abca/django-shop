@@ -16,8 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include,url
+from django.shortcuts import redirect
+from . import views
+from billing import views as v2
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
+    url(r'^admin/', admin.site.urls),
     url(r'^billing/', include('billing.urls')),
+    url(r'^.*',v2.noPage,name='noPage'),
 ]

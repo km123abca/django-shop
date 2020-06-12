@@ -1,0 +1,21 @@
+{% extends 'billing/base.html' %} 
+{% block title %}Our Home{% endblock %} 
+{%load static %} 
+{% block user %}{{user}}{% endblock %} 
+{% block body %}
+
+	<div class="jumbotron">
+		<h1 class="display-4">Welcome to the Discussion Forum</h1>
+		<p class="lead">This is a discussion Forum where you can interact with others and complain about people</p>
+		<hr class="my-4">
+
+			  <p>Only Registered users can post comments or start new discussions</p>
+
+			  <a class="btn btn-primary btn-lg" href="{% url 'billing:logout_user' %}" role="button">Go to Home Page</a>
+	</div>
+
+{% endblock %} 
+{%block loutslot %}
+<a class="dropdown-item" href="{% url 'billing:logout_user' %}">Logout</a>
+{% endblock %}
+

@@ -11,13 +11,30 @@ from .forms import UserForm,UserFormLogin
 
 def index(request):
     # return HttpResponse("<h1>Hello World</h1>")
-    if request.user is None or request.user=="AnonymousUser":
+    print(request.user)
+    # if request.user is None or request.user=="AnonymousUser":
+    if not request.user.is_authenticated:    
         return redirect('billing:login')
     else:
         us=request.user
         return render(request, 'billing/index.html',
                     {
                         "msg": "Alright Friend lets embark on another beautiful journey together",
+                        "user": us,
+                    }
+                    )
+
+def chat(request):
+    # return HttpResponse("<h1>Hello World</h1>")
+    print(request.user)
+    # if request.user is None or request.user=="AnonymousUser":
+    if not request.user.is_authenticated:
+        request.session['askedfor']='billing:chat'    
+        return redirect('billing:login')
+    else:
+        us=request.user
+        return render(request, 'billing/chatwindow.html',
+                    {                        
                         "user": us,
                     }
                     )
@@ -38,6 +55,8 @@ class LoginFormView(View):
             
             if user is not None and user.is_active:
                 login(request,user)
+                if request.session['askedfor']:
+                    return redirect(request.session['askedfor'])
                 return redirect('billing:index')
             return render(request, self.template_name, {'form': form,'title':'Login','error_message':'Wrong credentials'})
         
@@ -66,6 +85,8 @@ class UserFormView(View):
             if user.is_active:
                 # thats it.... User is logged in now, we can now refer to the user as request.user.username.etc
                 login(request, user)
+                if request.session['askedfor']:
+                    return redirect(request.session['askedfor'])
                 return redirect('billing:index')
             return render(request, self.template_name, {'form': form,'title':'Register','error_message':'Wrong credentials'})
         return render(request, self.template_name, {'form': form,'title':'Register','error_message':'LOGIN FAILED'})
@@ -73,4 +94,7 @@ class UserFormView(View):
 def logout_user(request):
     logout(request)
     return redirect('billing:login')
+
+def noPage(request):
+    return render(request,'billing/404.html')
    

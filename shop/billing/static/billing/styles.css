@@ -1,3 +1,8 @@
+#bdcena{
+  background-image: url("images/cena.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
 .cena {
   background-image: url("images/cena.jpg");
   background-repeat: no-repeat;
