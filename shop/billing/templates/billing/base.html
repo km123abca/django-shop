@@ -22,6 +22,7 @@
       type="text/css"
       href="{% static 'billing/styles.css' %}"
     />
+    <!-- <script type="text/javascript" src="{% static 'billing/scriptsx.js' %}" /> -->
 
     <title>{% block title %}Home{% endblock %}</title>
   </head>
@@ -67,7 +68,7 @@
               More
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Action</a>
+              <a class="dropdown-item" href="{% url 'billing:chat' %}">Chat Page</a>
               <div class="dropdown-divider"></div>
               {%block loutslot %}
               <a class="dropdown-item" href="{% url 'billing:login' %}"
@@ -100,6 +101,26 @@
       </div>
     </nav>
 
+    <div class="modal" id="mm" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="mheader">Empty Reply</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="mmessage">
+            <p>You have to type something in your reply</p>
+          </div>
+          <div class="modal-footer">
+            <!-- <button type="button" class="btn btn-primary">OK</button> -->
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+      </div>
+    
     {% block body %} {% endblock %}
 
     <!-- Optional JavaScript -->
@@ -119,5 +140,6 @@
       integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
       crossorigin="anonymous"
     ></script>
+    <script type="text/javascript" src="{% static 'billing/scriptsx.js' %}" />
   </body>
 </html>

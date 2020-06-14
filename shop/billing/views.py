@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login,logout
 from django.views.generic import View
 from .forms import UserForm,UserFormLogin
+from .models import *
 
 # Create your views here.
 
@@ -16,11 +17,11 @@ def index(request):
     if not request.user.is_authenticated:    
         return redirect('billing:login')
     else:
-        us=request.user
+        us=request.user        
         return render(request, 'billing/index.html',
                     {
                         "msg": "Alright Friend lets embark on another beautiful journey together",
-                        "user": us,
+                        "user": us,                        
                     }
                     )
 
@@ -33,17 +34,22 @@ def chat(request):
         return redirect('billing:login')
     else:
         us=request.user
+        chats=Chat_message.objects.all()
         return render(request, 'billing/chatwindow.html',
-                    {                        
-                        "user": us,
-                    }
-                    )
+                                {                        
+                                    "user": us,
+                                    "forum_title":"Common",
+                                    "chats":chats,
+                                }
+                     )
 
 class LoginFormView(View):
     form_class=UserFormLogin
     template_name = 'billing/register.html'
     def get(self, request):
         form = self.form_class(None)
+        if request.session.has_key('askedfor'):
+            return render(request, self.template_name, {'form': form,'title':'Login','err':'You have to Login First'})    
         return render(request, self.template_name, {'form': form,'title':'Login'})
 
     def post(self,request):
@@ -55,8 +61,10 @@ class LoginFormView(View):
             
             if user is not None and user.is_active:
                 login(request,user)
-                if request.session['askedfor']:
-                    return redirect(request.session['askedfor'])
+                if request.session.has_key('askedfor'):
+                    x=request.session['askedfor']
+                    del request.session['askedfor']
+                    return redirect(x)
                 return redirect('billing:index')
             return render(request, self.template_name, {'form': form,'title':'Login','error_message':'Wrong credentials'})
         

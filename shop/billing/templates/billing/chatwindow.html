@@ -11,8 +11,18 @@
 
 			  <p>Only Registered users can post comments or start new discussions</p>
 
-			  <a class="btn btn-primary btn-lg" href="{% url 'billing:logout_user' %}" role="button">Go to Home Page</a>
+			  <a class="btn btn-primary btn-lg" href="{% url 'billing:index' %}" role="button">Go to Home Page</a>
 	</div>
+
+	<div class="container">
+		<h1 class="text-center">This is the {{forum_title}} discussion forum</h1>
+	</div>
+
+	<div class="container border rounded chat-win">
+	{% for chat in chats %}
+	   <h2>{{chat.msg_content}}</h2>
+	{% endfor %}
+    </div>
 
 {% endblock %} 
 {%block loutslot %}

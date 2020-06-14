@@ -14,15 +14,29 @@
   font-size: 36px;
   text-align: center;
 }
-body {
+/*body {
   background: linear-gradient(
     90deg,
     rgb(62, 65, 64) 0%,
     rgb(141, 80, 211) 43%,
     rgb(109, 93, 110) 100%
+  );*/
+
+
+  body {
+  background: linear-gradient(  
+    90deg,
+    #e6f5ff 0%,
+    #b3e0ff 43%,
+    #99e6e6 100%
   );
   /*background: linear-gradient(90deg, #99bbff 0%, #4d88ff 43%, #8080ff 100%);*/
-  background-color: #b3b3ff;
+  /*background-color: #b3b3ff;*/
+}
+
+.chat-win{
+  background-color: red;
+  border-radius:10%;
 }
 
 .loginbox {
