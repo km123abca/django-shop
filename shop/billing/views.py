@@ -93,8 +93,10 @@ class UserFormView(View):
             if user.is_active:
                 # thats it.... User is logged in now, we can now refer to the user as request.user.username.etc
                 login(request, user)
-                if request.session['askedfor']:
-                    return redirect(request.session['askedfor'])
+                if request.session.has_key('askedfor'):
+                    x=request.session['askedfor']
+                    del request.session['askedfor']
+                    return redirect(x)
                 return redirect('billing:index')
             return render(request, self.template_name, {'form': form,'title':'Register','error_message':'Wrong credentials'})
         return render(request, self.template_name, {'form': form,'title':'Register','error_message':'LOGIN FAILED'})
