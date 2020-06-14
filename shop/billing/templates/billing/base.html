@@ -8,7 +8,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-
+    <script src="{% static 'billing/scriptsx.js' %}" />
     <!-- Bootstrap CSS -->
     <link
       rel="stylesheet"
@@ -22,7 +22,10 @@
       type="text/css"
       href="{% static 'billing/styles.css' %}"
     />
-    <!-- <script type="text/javascript" src="{% static 'billing/scriptsx.js' %}" /> -->
+
+
+    
+
 
     <title>{% block title %}Home{% endblock %}</title>
   </head>
@@ -113,8 +116,7 @@
           <div class="modal-body" id="mmessage">
             <p>You have to type something in your reply</p>
           </div>
-          <div class="modal-footer">
-            <!-- <button type="button" class="btn btn-primary">OK</button> -->
+          <div class="modal-footer">           
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
         </div>
@@ -140,6 +142,6 @@
       integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
       crossorigin="anonymous"
     ></script>
-    <script type="text/javascript" src="{% static 'billing/scriptsx.js' %}" />
+    <!-- <script type="text/javascript" src="{% static 'billing/scriptsx.js' %}" /> -->
   </body>
 </html>

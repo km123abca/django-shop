@@ -9,7 +9,7 @@ class Chat_message(models.Model):
 	dislikes=models.IntegerField(default=0)
 
 	def __str__(self):
-		return ("Sender:"+self.from_whom)
+		return (self.from_whom+" says "+self.msg_content)
 
 class Reply_to_messages(models.Model):
 	chat_message=models.ForeignKey(Chat_message,related_name='replies',on_delete=models.CASCADE)
@@ -19,8 +19,8 @@ class Reply_to_messages(models.Model):
 	likes=models.IntegerField(default=0)
 	dislikes=models.IntegerField(default=0)
 
-	class Meta:
-		unique_together = ['chat_message', 'from_whom']
+	# class Meta:
+	# 	unique_together = ['chat_message', 'from_whom']
 
 	def __str__(self):
 		return '%s: %s' % (self.from_whom, self.rly_content)
