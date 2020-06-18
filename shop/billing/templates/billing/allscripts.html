@@ -1,0 +1,68 @@
+<script type="text/javascript">
+	function revealReplies(x)
+		{
+		// alert(`reply num:${x} will be revealed`);
+		let elem=document.querySelector("#reply"+x);
+		let y=document.querySelector("#replylink"+x);
+		if ((elem.style.display=="")||(elem.style.display=="none"))
+		   {elem.style.display="block";y.innerHTML="hide replies";}
+		else
+			{elem.style.display="none";y.innerHTML="view replies";}
+		}
+
+	function showModal_k(titlemessage="no title",bodymessage="Dang it Kitchu.. Pull yourself together ")
+		{
+		 $('#mheader').html(titlemessage);
+		 $('#mmessage').html(bodymessage);
+		 $('#mm').modal();
+		}
+   
+   function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+	const form=document.getElementById("msg-form");
+	form.addEventListener("submit", 
+			                      (event) => 
+			                        {
+			                        	event.preventDefault();
+			                        	const formData = new FormData(form);
+			                        	const msgToSend=formData.get("msgToSend");
+			                        	console.log(msgToSend);
+			                        	// fetch('billing/postchat/',
+			                        	// 	               {
+			                        	// 	               	method:"POST",
+			                        	// 	               	body:formData,
+			                        	// 	               	// headers: {
+			                        	// 	               	// 		   "content-type":"multipart/form-data",
+			                        	                             // 'X-CSRFToken':getCookie('csrftoken'),
+			                        	// 	               	// 		 },
+			                        	// 	               }	                        		               
+			                        	// 	 )
+			                        	// .then(response=>response.json())
+			                        	// .then( (resp)=>
+			                        	// 	           {
+			                        	// 		       // document.querySelector('#warn-i').innerHTML=resp.message;
+			                        	// 		       showModal_k("Done",resp.message);
+			                        	// 		       }
+			                        	// 	 )
+			                        	// .catch(err=>
+			                        	// 	        {
+			                        	// 	        	showModal_k("Error",err);
+			                        	// 	        }
+			                        	// 	  );
+			                        }
+			             );
+</script>

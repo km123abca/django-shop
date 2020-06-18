@@ -8,7 +8,11 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <script src="{% static 'billing/scriptsx.js' %}" />
+
+    {% include 'billing/allscripts.html' %}
+    <!-- <script src="{% static 'billing/scriptsx.js' %}" /> -->
+
+
     <!-- Bootstrap CSS -->
     <link
       rel="stylesheet"

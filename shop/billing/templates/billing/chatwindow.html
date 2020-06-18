@@ -18,6 +18,8 @@
 		<h1 class="text-center">This is the {{forum_title}} discussion forum</h1>
 	</div>
 
+	
+
 	<div class="container border  chat-win">
 
 		{% for chat in chats %}
@@ -31,7 +33,7 @@
 		   			<div class="mid-child font-weight-bold">likes{{chat.likes}}</div>
 		   			<div class="mid-child font-weight-bold">dislikes{{chat.dislikes}}</div>
 		   			<div class="mid-child font-weight-bold">
-		   			    <a href="javascript:revealReplies(0)">replies{{forloop.counter0}}</a>
+		   			    <a href="javascript:revealReplies({{forloop.counter0}})" id="replylink{{forloop.counter0}}">view replies</a>
 		   			</div>
 		   		</div>
 		   </div>	
@@ -50,6 +52,13 @@
 		   </div>
 		{% endfor %}
 
+
+    </div>
+    <div class="container">
+    	<form action="" id="msg-form" class="msg-win" method="post"> 
+    	  <input type='text' id='msgToSend' name='msgToSend' />
+    	  <button type='submit' class='btn btn-primary'>Send</button>
+        </form>
 
     </div>
 
