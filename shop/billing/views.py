@@ -4,8 +4,10 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login,logout
 from django.views.generic import View
+from django.http import HttpResponse,JsonResponse
 from .forms import UserForm,UserFormLogin
 from .models import *
+import json
 
 # Create your views here.
 
@@ -26,9 +28,6 @@ def index(request):
                     )
 
 def chat(request):
-    # return HttpResponse("<h1>Hello World</h1>")
-    print(request.user)
-    # if request.user is None or request.user=="AnonymousUser":
     if not request.user.is_authenticated:
         request.session['askedfor']='billing:chat'    
         return redirect('billing:login')
@@ -42,6 +41,44 @@ def chat(request):
                                     "chats":chats,
                                 }
                      )
+def chat_json(request):
+    jsonChats=[]
+    chats=Chat_message.objects.all()
+
+    for chat in chats:
+        replies=[]
+        for reply in chat.replies.all():
+            replies.append({"from_whom":reply.from_whom,
+                          "rly_content":reply.rly_content,
+                          "sent_when":reply.sent_when,
+                          "likes":reply.likes,
+                          "dislikes":reply.dislikes
+            }) 
+        jsonChats.append({"from_whom":chat.from_whom,
+                          "msg_content":chat.msg_content,
+                          "sent_when":chat.sent_when,
+                          "likes":chat.likes,
+                          "dislikes":chat.dislikes,
+                          "replies":replies,
+            })
+
+
+    if request.user.is_authenticated:
+        return JsonResponse({"chats":jsonChats})
+def postchat(request):
+    if request.method=='POST':
+        body_content=json.loads(request.body.decode('utf-8'))
+        # print(body_content["user"])
+        new_msg=Chat_message(from_whom=body_content["user"],msg_content=body_content["msg"])
+        new_msg.save()
+        return HttpResponse('{"message":"ok"}')
+    else:
+        return redirect('billing:noPage')
+    # if request.method=='POST':
+    #     return HttpResponse("<h1>That was a post request</h1>")
+    # else:
+    #     return HttpResponse("<h1>That was a get request</h1>")
+
 
 class LoginFormView(View):
     form_class=UserFormLogin

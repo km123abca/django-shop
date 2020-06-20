@@ -3,7 +3,7 @@
 {%load static %} 
 {% block user %}{{user}}{% endblock %} 
 {% block body %}
-
+    
 	<div class="jumbotron">
 		<h1 class="display-4">Welcome to the Discussion Forum</h1>
 		<p class="lead">This is a discussion Forum where you can interact with others and complain about people</p>
@@ -20,8 +20,9 @@
 
 	
 
-	<div class="container border  chat-win">
-
+	<div class="container border  chat-win" id="chatContainer">
+	 <!-- ENTIRE INNERHTML WAS REMOVED , WILL BE UPDATED DYNAMICALLY FROM JSCRIPT-->
+     <!--
 		{% for chat in chats %}
 		   <div class="container border chatbox-container">
 		   		<div class="senderbox">
@@ -52,16 +53,19 @@
 		   </div>
 		{% endfor %}
 
-
+    -->
     </div>
+
     <div class="container">
-    	<form action="" id="msg-form" class="msg-win" method="post"> 
+    	<form action="" id="msg-form" name="msg-form" class="msg-win" method="post"> 
+    	  {% csrf_token %}
+    	  <input type="hidden" name="user" value="{{ user }}">
     	  <input type='text' id='msgToSend' name='msgToSend' />
     	  <button type='submit' class='btn btn-primary'>Send</button>
         </form>
-
+     
     </div>
-
+<script type="text/javascript" src="{% static 'billing/loadchats.js' %}" ></script>
 {% endblock %} 
 {%block loutslot %}
 <a class="dropdown-item" href="{% url 'billing:logout_user' %}">Logout</a>

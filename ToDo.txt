@@ -12,3 +12,5 @@
 [x] create folder static/billing inside the billing app and put a customized styles.css and  create an images folder
 [x] create/edit urls.py file in billing and shop
 [x] create the index view in views.py
+
+https://stackoverflow.com/questions/16790375/django-object-is-not-json-serializable

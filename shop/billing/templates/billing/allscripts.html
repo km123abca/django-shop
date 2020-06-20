@@ -17,52 +17,25 @@
 		 $('#mm').modal();
 		}
    
-   function getCookie(name) {
+   function getCookie(name) 
+   	{
     var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
+    if (document.cookie && document.cookie !== '') 
+    	{
         var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
+        for (var i = 0; i < cookies.length; i++) 
+        	{
             var cookie = cookies[i].trim();
             // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            if (cookie.substring(0, name.length + 1) === (name + '=')) 
+            	{
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                 break;
-            }
-        }
-    }
-    return cookieValue;
-}
+            	}
+        	}
+    	}
+    	return cookieValue;
+	}
 
-	const form=document.getElementById("msg-form");
-	form.addEventListener("submit", 
-			                      (event) => 
-			                        {
-			                        	event.preventDefault();
-			                        	const formData = new FormData(form);
-			                        	const msgToSend=formData.get("msgToSend");
-			                        	console.log(msgToSend);
-			                        	// fetch('billing/postchat/',
-			                        	// 	               {
-			                        	// 	               	method:"POST",
-			                        	// 	               	body:formData,
-			                        	// 	               	// headers: {
-			                        	// 	               	// 		   "content-type":"multipart/form-data",
-			                        	                             // 'X-CSRFToken':getCookie('csrftoken'),
-			                        	// 	               	// 		 },
-			                        	// 	               }	                        		               
-			                        	// 	 )
-			                        	// .then(response=>response.json())
-			                        	// .then( (resp)=>
-			                        	// 	           {
-			                        	// 		       // document.querySelector('#warn-i').innerHTML=resp.message;
-			                        	// 		       showModal_k("Done",resp.message);
-			                        	// 		       }
-			                        	// 	 )
-			                        	// .catch(err=>
-			                        	// 	        {
-			                        	// 	        	showModal_k("Error",err);
-			                        	// 	        }
-			                        	// 	  );
-			                        }
-			             );
+
 </script>
