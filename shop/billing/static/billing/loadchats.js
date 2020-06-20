@@ -24,7 +24,7 @@ function dynamicChat()
 
 	}
 dynamicChat();
-setInterval(dynamicChat, 1000);
+//setInterval(dynamicChat, 1000);
 
 function loadChats(chats)
 	{
@@ -49,11 +49,14 @@ function loadChats(chats)
 						   			    <a href="javascript:revealReplies(${msgcount})" id="replylink${msgcount}">view replies</a>
 						   			</div>
 						   		</div>
-		   					</div>
-		   					<div class="replybox-container" id="reply${msgcount}">
+		   					</div>		
+		   					<div id="reply${msgcount}" class="replyset">					
 		   					`;
+		   	var rlycount=-1;
 		   	for(var reply of chat.replies)
 		   			{
+		   				rlycount+=1;
+		   				chatString+=`<div class="replybox-container" id="mess${msgcount}reply${rlycount}">`;
 		   				chatString+=`<div class="senderbox">
 							   			<span class="left-child font-weight-bold">${reply.from_whom}</span>
 					              		<span class="font-weight-bold">${reply.sent_when}</span>
@@ -63,9 +66,19 @@ function loadChats(chats)
 								   			<span class="mid-child font-weight-bold">likes ${reply.likes}</span>
 						              		<span class="mid-child font-weight-bold">dislikes ${reply.dislikes}</span>
 								   		</div>`;
+						chatString+='</div>';
 		   				
 		   			}
-		   			chatString+=`</div>`;
+		   			
+		   			chatString+=`<div class="container">
+    							    <form action="" id="rly-form${msgcount}" name="rly-form${msgcount}" class="rly-win" method="post">     	  
+    	  								<input type="hidden" name="user" value="{{ user }}" />
+    	  						        <input type='text' class='rlyToSend' id='rlyToSend${msgcount}' name='rlyToSend${msgcount}' />
+    	  								<button type='submit' class='btn btn-primary'>Send</button>
+        							</form>     
+    						     </div>`;
+		   			
+		   			chatString+=`</div></div>`;
 		}
 		document.querySelector("#chatContainer").innerHTML=chatString;
 	}
