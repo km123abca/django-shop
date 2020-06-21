@@ -1,13 +1,22 @@
 <script type="text/javascript">
+    var hidden_replies={};
 	function revealReplies(x)
 		{
 		// alert(`reply num:${x} will be revealed`);
 		let elem=document.querySelector("#reply"+x);
 		let y=document.querySelector("#replylink"+x);
 		if ((elem.style.display=="")||(elem.style.display=="none"))
-		   {elem.style.display="block";y.innerHTML="hide replies";}
+		   {
+            elem.style.display="block";
+            y.innerHTML="hide replies";
+            hidden_replies[x]="block";
+           }
 		else
-			{elem.style.display="none";y.innerHTML="view replies";}
+			{
+                elem.style.display="none";
+                y.innerHTML="view replies";
+                hidden_replies[x]="none";
+            }
 		}
 
 	function showModal_k(titlemessage="no title",bodymessage="Dang it Kitchu.. Pull yourself together ")

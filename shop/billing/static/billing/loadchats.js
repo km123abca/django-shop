@@ -3,7 +3,7 @@ console.log("loadchats.js was invoked");
 
 function dynamicChat()
 	{
-		// console.log("I was invoked");
+		// console.log(hidden_replies);
 		fetch("../chat_json/")
 		     .then(response=>{
 		     	             //console.log(response);
@@ -24,7 +24,9 @@ function dynamicChat()
 
 	}
 dynamicChat();
-//setInterval(dynamicChat, 1000);
+setInterval(dynamicChat, 1000);
+
+
 
 function loadChats(chats)
 	{
@@ -35,22 +37,30 @@ function loadChats(chats)
 		var msgcount=-1;
 		for (var chat of chats)
 		{
+			
 			msgcount+=1;
+			var dispStyle="none";
+			var dispMsg="view replies";
+			if(hidden_replies[msgcount])
+			{
+				dispStyle=hidden_replies[msgcount];
+				dispMsg=(dispStyle=="block")?"view replies":"hide replies";
+			}
 			chatString+=`<div class="container border chatbox-container">
 			                <div class="senderbox">
 			                	<div class="left-child font-weight-bold">${chat.from_whom}</div>
-		   						<div class="font-weight-bold">${chat.sent_when}</div>
+		   						<div class="font-weight-bold">${new Date(chat.sent_when).toLocaleDateString('en-GB')}</div>
 		   					</div>
 		   					<div>${chat.msg_content}</div>
 						   	    <div class="senderbox">
 						   			<div class="mid-child font-weight-bold">likes${chat.likes}</div>
 						   			<div class="mid-child font-weight-bold">dislikes${chat.dislikes}</div>
 						   			<div class="mid-child font-weight-bold">
-						   			    <a href="javascript:revealReplies(${msgcount})" id="replylink${msgcount}">view replies</a>
+						   			    <a href="javascript:revealReplies(${msgcount})" id="replylink${msgcount}">${dispMsg}</a>
 						   			</div>
 						   		</div>
 		   					</div>		
-		   					<div id="reply${msgcount}" class="replyset">					
+		   					<div id="reply${msgcount}" class="replyset" style="display:${dispStyle};">					
 		   					`;
 		   	var rlycount=-1;
 		   	for(var reply of chat.replies)
@@ -59,7 +69,7 @@ function loadChats(chats)
 		   				chatString+=`<div class="replybox-container" id="mess${msgcount}reply${rlycount}">`;
 		   				chatString+=`<div class="senderbox">
 							   			<span class="left-child font-weight-bold">${reply.from_whom}</span>
-					              		<span class="font-weight-bold">${reply.sent_when}</span>
+					              		<span class="font-weight-bold">${new Date(reply.sent_when).toLocaleDateString('en-GB')}</span>
 							   		  </div>
 								   		<div class="msgcontent">${reply.rly_content}</div>
 								   		<div class="senderbox">
