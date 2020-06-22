@@ -58,7 +58,7 @@
 
     <div class="container">
     	<form action="" id="msg-form" name="msg-form" class="msg-win" method="post"> 
-    	  {% csrf_token %}
+    	  <!-- {% csrf_token %} -->
     	  <input type="hidden" name="user" value="{{ user }}">
     	  <input type='text' id='msgToSend' name='msgToSend' />
     	  <button type='submit' class='btn btn-primary'>Send</button>

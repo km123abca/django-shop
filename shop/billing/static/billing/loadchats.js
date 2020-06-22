@@ -24,7 +24,7 @@ function dynamicChat()
 
 	}
 dynamicChat();
-setInterval(dynamicChat, 1000);
+// setInterval(dynamicChat, 1000);
 
 
 
@@ -81,9 +81,11 @@ function loadChats(chats)
 		   			}
 		   			
 		   			chatString+=`<div class="container">
-    							    <form action="" id="rly-form${msgcount}" name="rly-form${msgcount}" class="rly-win" method="post">     	  
+    							    <form action="" id="rly-form${msgcount}" name="rly-form${msgcount}" class="rly-win" method="post"> 
+    							         {% csrf_token %}    	  
     	  								<input type="hidden" name="user" value="{{ user }}" />
-    	  						        <input type='text' class='rlyToSend' id='rlyToSend${msgcount}' name='rlyToSend${msgcount}' />
+    	  								<input type="hidden" name="parentid" value="${chat.id}" />
+    	  						        <input type='text' class='rlyToSend' id='rlyToSend${msgcount}' name='rlyToSend' />
     	  								<button type='submit' class='btn btn-primary'>Send</button>
         							</form>     
     						     </div>`;
@@ -141,3 +143,49 @@ form.addEventListener("submit",
 		                        		  );
 		                        }
 			             );
+
+
+
+function loadEventListeners()
+	{
+		var replyForms=document.getElementsByClassName('rly-win');
+		for(var i=0;i<replyForms.length;i++)
+		{
+		const form=replyForms[i];
+		form.addEventListener("submit", 
+				                      (event) => 
+				                        {
+				                        	// alert("hey");
+				                        	event.preventDefault();
+				                        	const formData = new FormData(form);
+				                        	const msgToSend=formData.get("rlyToSend");
+				                        	const user=formData.get("user");
+				                        	const parentid=formData.get("parentid");
+				                        	const msg={"msg":msgToSend,"user":user,"chatid":parentid};
+				                        	// console.log(msgToSend);
+				                        	fetch("../postchat_reply/",
+				                        		               {
+				                        		               	method:"POST",
+				                        		               	body:JSON.stringify(msg),
+				                        		               	headers: {
+				                        		               			 "content-type":"application/json",
+				                        	                             "X-CSRFToken":getCookie('csrftoken'),
+				                        		               			 },
+				                        		               }	                        		               
+				                        		 )
+				                        	.then(response=>response.json())
+				                        	.then( (resp)=>
+				                        		           {
+				                        			       // document.querySelector('#warn-i').innerHTML=resp.message;
+				                        			       showModal_k("Done",resp.message);
+				                        			       }
+				                        		 )
+				                        	.catch(err=>
+				                        		        {
+				                        		        	showModal_k("Error",err);
+				                        		        }
+				                        		  );
+				                        }
+					             );
+		}
+	}

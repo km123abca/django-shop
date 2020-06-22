@@ -60,6 +60,7 @@ def chat_json(request):
                           "likes":chat.likes,
                           "dislikes":chat.dislikes,
                           "replies":replies,
+                          "id":chat.id,
             })
 
 
@@ -69,7 +70,9 @@ def postchat(request):
     if request.method=='POST':
         body_content=json.loads(request.body.decode('utf-8'))
         # print(body_content["user"])
-        new_msg=Chat_message(from_whom=body_content["user"],msg_content=body_content["msg"])
+        new_msg=Chat_message(from_whom=body_content["user"],
+                             msg_content=body_content["msg"],
+                            )
         new_msg.save()
         return HttpResponse('{"message":"ok"}')
     else:
@@ -78,6 +81,19 @@ def postchat(request):
     #     return HttpResponse("<h1>That was a post request</h1>")
     # else:
     #     return HttpResponse("<h1>That was a get request</h1>")
+
+def postchat_reply(request):
+    if request.method=='POST':
+        body_content=json.loads(request.body.decode('utf-8'))
+        # print(body_content["user"])
+        new_msg=Reply_to_messages(from_whom=body_content["user"],
+                                  rly_content=body_content["msg"],
+                                  chat_message_id=body_content["chatid"]
+                                 )
+        new_msg.save()
+        return HttpResponse('{"message":"ok"}')
+    else:
+        return redirect('billing:noPage')
 
 
 class LoginFormView(View):
