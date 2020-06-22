@@ -14,6 +14,7 @@ function dynamicChat()
 		     	           {
 		     	           // console.log(resp);
 		     	           loadChats(resp);
+		     	           loadEventListeners();
 		     	           }
 		     	  )
 		     .catch(err=>
@@ -27,14 +28,18 @@ dynamicChat();
 // setInterval(dynamicChat, 1000);
 
 
-
+let numMessages=0;
+let chatStorage;
 function loadChats(chats)
 	{
 		//get chats and display to screen
 		chats=chats.chats;
+		
 		// console.log(chats);
 		chatString="";
 		var msgcount=-1;
+		numMessages=chats.length;
+		
 		for (var chat of chats)
 		{
 			
@@ -82,8 +87,8 @@ function loadChats(chats)
 		   			
 		   			chatString+=`<div class="container">
     							    <form action="" id="rly-form${msgcount}" name="rly-form${msgcount}" class="rly-win" method="post"> 
-    							         {% csrf_token %}    	  
-    	  								<input type="hidden" name="user" value="{{ user }}" />
+    							           	  
+    	  								<input type="hidden" name="user" value="${userx}" />
     	  								<input type="hidden" name="parentid" value="${chat.id}" />
     	  						        <input type='text' class='rlyToSend' id='rlyToSend${msgcount}' name='rlyToSend' />
     	  								<button type='submit' class='btn btn-primary'>Send</button>
@@ -116,9 +121,10 @@ form.addEventListener("submit",
 		                        	event.preventDefault();
 		                        	const formData = new FormData(form);
 		                        	const msgToSend=formData.get("msgToSend");
-		                        	const user=formData.get("user");
+		                        	const user=formData.get("user");		                        	
 		                        	const msg={"msg":msgToSend,"user":user};
 		                        	console.log(msgToSend);
+		                        	
 		                        	fetch("../postchat/",
 		                        		               {
 		                        		               	method:"POST",
@@ -141,14 +147,23 @@ form.addEventListener("submit",
 		                        		        	showModal_k("Error",err);
 		                        		        }
 		                        		  );
+									
 		                        }
 			             );
 
 
 
 function loadEventListeners()
-	{
+	{   
 		var replyForms=document.getElementsByClassName('rly-win');
+
+        // var replyForms=[];
+        
+        // for(var i=0;i<numMessages;i++)
+        // {
+        // 	replyForms.push(document.querySelector("#rly-form"+i));
+        // }
+		
 		for(var i=0;i<replyForms.length;i++)
 		{
 		const form=replyForms[i];
@@ -162,7 +177,10 @@ function loadEventListeners()
 				                        	const user=formData.get("user");
 				                        	const parentid=formData.get("parentid");
 				                        	const msg={"msg":msgToSend,"user":user,"chatid":parentid};
+				                        	// const csrft=formData.get("csrfmiddlewaretoken");
+		                        	        //console.log(csrft);
 				                        	// console.log(msgToSend);
+				                        	
 				                        	fetch("../postchat_reply/",
 				                        		               {
 				                        		               	method:"POST",
@@ -185,7 +203,11 @@ function loadEventListeners()
 				                        		        	showModal_k("Error",err);
 				                        		        }
 				                        		  );
+				                        	
 				                        }
 					             );
 		}
+		console.log("All Listeners loaded");
 	}
+//<input type="hidden" name="csrfmiddlewaretoken" value="getCookie('csrftoken')">
+
