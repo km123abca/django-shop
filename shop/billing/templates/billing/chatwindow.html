@@ -11,7 +11,9 @@
 
 			  <p>Only Registered users can post comments or start new discussions</p>
 
-			  <a class="btn btn-primary btn-lg" href="{% url 'billing:index' %}" role="button">Go to Home Page</a>
+			  <!-- <a class="btn btn-primary btn-lg" href="{% url 'billing:index' %}" role="button">Go to Home Page</a> -->
+			  <a class="btn btn-primary btn-lg" href="javascript:dynamicChat()" role="button">Go to Home Page</a>
+			  
 	</div>
 
 	<div class="container">
@@ -21,39 +23,7 @@
 	
 
 	<div class="container border  chat-win" id="chatContainer">
-	 <!-- ENTIRE INNERHTML WAS REMOVED , WILL BE UPDATED DYNAMICALLY FROM JSCRIPT-->
-     <!--
-		{% for chat in chats %}
-		   <div class="container border chatbox-container">
-		   		<div class="senderbox">
-		   			<div class="left-child font-weight-bold">{{chat.from_whom}}</div>
-		   			<div class="font-weight-bold">{{chat.sent_when}}</div>
-		   		</div>
-		   	    <div>{{chat.msg_content}}</div>
-		   	    <div class="senderbox">
-		   			<div class="mid-child font-weight-bold">likes{{chat.likes}}</div>
-		   			<div class="mid-child font-weight-bold">dislikes{{chat.dislikes}}</div>
-		   			<div class="mid-child font-weight-bold">
-		   			    <a href="javascript:revealReplies({{forloop.counter0}})" id="replylink{{forloop.counter0}}">view replies</a>
-		   			</div>
-		   		</div>
-		   </div>	
-		   <div class="replybox-container" id="reply{{forloop.counter0}}">
-           {% for reply in chat.replies.all %}		   
-		   		<div class="senderbox">
-		   			<span class="left-child font-weight-bold">{{reply.from_whom}}</span>
-              		<span class="font-weight-bold">{{reply.sent_when}}</span>
-		   		</div>
-		   		<div class="msgcontent">{{reply.rly_content}}</div>
-		   		<div class="senderbox">
-		   			<span class="mid-child font-weight-bold">likes {{reply.likes}}</span>
-              		<span class="mid-child font-weight-bold">dislikes {{reply.dislikes}}</span>
-		   		</div>		     
-		   {% endfor %} 
-		   </div>
-		{% endfor %}
-
-    -->
+	
     </div>
 
     <div class="container">
