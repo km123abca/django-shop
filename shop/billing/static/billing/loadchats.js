@@ -27,7 +27,7 @@ function dynamicChat()
 
 	}
 dynamicChat();
-// setInterval(dynamicChat, 1000);
+setInterval(dynamicChat, 1000);
 
 
 let numMessages=0;
@@ -85,7 +85,7 @@ function scanForChanges(chats)
 			
 			if(oldChatsList.indexOf(l)!=-1)
 				continue;
-			console.log('loading new chat');
+			// console.log('loading new chat');
 			chat=chats[l];
             cntr+=1;
 			chatString=`<div class="container border chatbox-container" id="cbcntr${cntr}">
@@ -136,6 +136,7 @@ function scanForChanges(chats)
 function checkReplies(replyClass,replies,replyMasterContainer,newReplyset=false)
 	{
 		var oldChatsList=[];
+        
 		if(!newReplyset)
 		{
 			for(var i=0;i<replyClass.length;i++)
@@ -156,13 +157,14 @@ function checkReplies(replyClass,replies,replyMasterContainer,newReplyset=false)
 						repcontent==reply.rly_content 
 					  )
 					{
+                        // console.log(`${repcontent} is duplicate`);
 						if(replyClass[i].querySelector("#rlikes").innerHTML!="likes "+reply.likes)
 							replyClass[i].querySelector("#rlikes").innerHTML="likes "+reply.likes;
 						if(replyClass[i].querySelector("#rdislikes").innerHTML!="dislikes "+reply.dislikes)
 							replyClass[i].querySelector("#rdislikes").innerHTML="dislikes "+reply.dislikes;
 						found_flg=true;
 						oldChatsList.push(k);
-						break;
+						// break;
 					}
 				}
 				if(!found_flg)
@@ -171,7 +173,7 @@ function checkReplies(replyClass,replies,replyMasterContainer,newReplyset=false)
 				}
 			}
 		}
-
+         
 		//set up new chats that are absent in oldChatsList
 		for(var k in replies)
 		{
@@ -179,7 +181,7 @@ function checkReplies(replyClass,replies,replyMasterContainer,newReplyset=false)
 			
 			if(oldChatsList.indexOf(k)!=-1)
 				continue;
-		console.log('loading new reply');
+		// console.log(`loading new reply,${reply.rly_content}`);
 		let chatString=`<div class="replybox-container" >
 			               <div class="senderbox" id="senderbox">
 			   			    <span class="left-child font-weight-bold" id="fwhom">${reply.from_whom}</span>
@@ -193,6 +195,7 @@ function checkReplies(replyClass,replies,replyMasterContainer,newReplyset=false)
 			             </div>`;
 			             
 	    replyMasterContainer.innerHTML+=chatString;
+	    // replyMasterContainer.innerHTML=chatString;
 		}
 	}
 
@@ -306,7 +309,8 @@ form.addEventListener("submit",
 		                        	.then( (resp)=>
 		                        		           {
 		                        			       // document.querySelector('#warn-i').innerHTML=resp.message;
-		                        			       showModal_k("Done",resp.message);
+		                        			       // showModal_k("Done",resp.message);
+		                        			       form.reset();
 		                        			       }
 		                        		 )
 		                        	.catch(err=>
@@ -334,6 +338,9 @@ function loadEventListeners()
 		for(var i=0;i<replyForms.length;i++)
 		{
 		const form=replyForms[i];
+		if(form.getAttribute('listenerLoadedHere'))
+			continue;
+		form.setAttribute('listenerLoadedHere',true);
 		form.addEventListener("submit", 
 				                      (event) => 
 				                        {
@@ -362,7 +369,8 @@ function loadEventListeners()
 				                        	.then( (resp)=>
 				                        		           {
 				                        			       // document.querySelector('#warn-i').innerHTML=resp.message;
-				                        			       showModal_k("Done",resp.message);
+				                        			       // showModal_k("Done",resp.message);
+				                        			       form.reset();
 				                        			       }
 				                        		 )
 				                        	.catch(err=>
@@ -374,7 +382,7 @@ function loadEventListeners()
 				                        }
 					             );
 		}
-		console.log("All Listeners loaded");
+		// console.log("All Listeners loaded");
 	}
 //<input type="hidden" name="csrfmiddlewaretoken" value="getCookie('csrftoken')">
 
