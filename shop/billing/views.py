@@ -87,6 +87,21 @@ def postchat(request):
 def dummy_response(request):
     return HttpResponse('{"message":"error"}')
 
+def editChat(request):
+    if request.method=='POST':            
+        body_content=json.loads(request.body.decode('utf-8'))
+        chatid=body_content["chatid"]
+        user=body_content["user"]
+        msg=body_content["msg"]
+        if user==str(request.user):
+            chatMod=Chat_message.objects.get(pk=chatid)
+            chatMod.msg_content=msg
+            chatMod.save()
+            return HttpResponse('{"message":"ok"}')
+        else:
+            return HttpResponse('{"message":"error"}')
+    return HttpResponse('{"message":"error"}')
+
 def deleteMainChat(request,chatid):
              
     msg=Chat_message.objects.get(pk=chatid)

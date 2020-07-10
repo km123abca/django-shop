@@ -143,6 +143,7 @@ function dynamicChat()
 		     	           // loadChats(resp);
 		     	           scanForChanges(resp);
 		     	           loadEventListeners();
+		     	          // loadEventListeners_editforms(); kmhere pickup
 		     	           }
 		     	  )
 		     .catch(err=>
@@ -244,6 +245,16 @@ function scanForChanges(chats)
 					   			${deleteString}
 
 						   	</div>
+
+						   	<div class="container editFormx" id="editFormx">
+							    <form action="" id="edit-form"  class="edit-win" method="post"> 
+							           	  
+	  								<input type="hidden" name="user" value="${userx}" />
+	  								<input type="hidden" name="parentid" value="${chat.id}" />
+	  						        <input type='text' class='editmsg' id='editmsg' name='editmsg' value='${chat.msg_content}' />
+	  								<button type='submit' class='btn btn-primary'>Edit</button>
+    							</form>     
+	    					</div>
 		   							
 		   					<div id="reply${cntr}" class="replyset" >	
 		   					    <div id="msgspot">
@@ -545,4 +556,66 @@ function loadEventListeners()
 		// console.log("All Listeners loaded");
 	}
 //<input type="hidden" name="csrfmiddlewaretoken" value="getCookie('csrftoken')">
+
+
+function loadEventListeners_editforms()
+	{   
+		var editForms=document.getElementsByClassName('editFormx');
+
+        // var replyForms=[];
+        
+        // for(var i=0;i<numMessages;i++)
+        // {
+        // 	replyForms.push(document.querySelector("#rly-form"+i));
+        // }
+		
+		for(var i=0;i<editForms.length;i++)
+		{
+		const form=editForms[i];
+		if(form.getAttribute('listenerLoadedHere'))
+			continue;
+		form.setAttribute('listenerLoadedHere',true);
+		form.addEventListener("submit", 
+				                      (event) => 
+				                        {
+				                        	// alert("hey");
+				                        	event.preventDefault();
+				                        	const formData = new FormData(form);
+				                        	const msgToSend=formData.get("editmsg");
+				                        	const user=formData.get("user");
+				                        	const parentid=formData.get("parentid");
+				                        	const msg={"msg":msgToSend,"user":user,"chatid":parentid};
+				                        	// const csrft=formData.get("csrfmiddlewaretoken");
+		                        	        //console.log(csrft);
+				                        	// console.log(msgToSend);
+				                        	
+				                        	fetch("../edit_chat/",
+				                        		               {
+				                        		               	method:"POST",
+				                        		               	body:JSON.stringify(msg),
+				                        		               	headers: {
+				                        		               			 "content-type":"application/json",
+				                        	                             "X-CSRFToken":getCookie('csrftoken'),
+				                        		               			 },
+				                        		               }	                        		               
+				                        		 )
+				                        	.then(response=>response.json())
+				                        	.then( (resp)=>
+				                        		           {
+				                        			       // document.querySelector('#warn-i').innerHTML=resp.message;
+				                        			       // showModal_k("Done",resp.message);
+				                        			       form.reset();
+				                        			       }
+				                        		 )
+				                        	.catch(err=>
+				                        		        {
+				                        		        	showModal_k("Error",err);
+				                        		        }
+				                        		  );
+				                        	
+				                        }
+					             );
+		}
+		// console.log("All Listeners loaded");
+	}
 
