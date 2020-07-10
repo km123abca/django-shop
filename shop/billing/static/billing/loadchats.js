@@ -1,6 +1,132 @@
 console.log("loadchats.js was invoked");
 
+ let like_string=`<button class="fa fa-thumbs-up bbtn" onclick="updatelikes(this)" aria-hidden="true" href="https://facebook.com" type="button"></button>`;
+ let dislike_string=`<button class="fa fa-thumbs-down bbtn"  onclick="updatedislikes(this)" bbtn" aria-hidden="true" type="button"></button>`;
 
+
+let rlike_string=`<button class="fa fa-thumbs-up bbtn" onclick="updaterlikes(this)" aria-hidden="true" href="https://facebook.com" type="button"></button>`;
+ let rdislike_string=`<button class="fa fa-thumbs-down bbtn" onclick="updaterdislikes(this)" bbtn" aria-hidden="true" type="button"></button>`;
+
+//function to update likes
+function updatelikes(elem)
+	{
+		let chatid=elem.parentElement.classList[elem.parentElement.classList.length-1];
+		chatid=chatid.split('_')[1];
+		// console.log(`chat number ${chatid} will be updated`);
+		updateLikesServer(chatid,1,1);
+		elem.blur();
+	}
+function updatedislikes(elem)
+	{
+		let chatid=elem.parentElement.classList[elem.parentElement.classList.length-1];
+		chatid=chatid.split('_')[1];
+		// console.log(`chat number ${chatid} will be updated`);
+		updateLikesServer(chatid,1,0);
+		elem.blur();
+	}
+
+function updaterlikes(elem)
+	{
+		let chatid=elem.parentElement.classList[elem.parentElement.classList.length-1];
+		chatid=chatid.split('_')[1];
+		// console.log(`reply number ${chatid} will be updated`);
+		updateLikesServer(chatid,0,1);
+	}
+function updaterdislikes(elem)
+	{
+		let chatid=elem.parentElement.classList[elem.parentElement.classList.length-1];
+		chatid=chatid.split('_')[1];
+		// console.log(`reply number ${chatid} will be updated`);
+		updateLikesServer(chatid,0,0);
+	}
+
+function deleteChat(chatid)
+	{ 
+		//todo write the delete chat script here
+		if(!confirm("You sure you want to delete this message?"))
+			return	false;
+		fetch(`../deletechat/${chatid}/`)
+		     .then(
+		     		response=>response.json()
+		     	  )
+		     .then(
+		     		response=>{
+		     				    if(response.message=="error")
+		     				    	showModal_k("Failed","Failed to delete the chat");
+		     				  }
+		     	  )
+		     .catch(err=>
+		     	         {
+		     	         	console.log(err);
+		     	         	showModal_k("error","error at front end");
+		     	         }
+		     	   );
+		return true;
+	}
+
+function deleteReply(chatid)
+	{ 
+		//todo write the delete chat script here
+		if(!confirm("You sure you want to delete this message?"))
+			return	false;
+		fetch(`../deletereply/${chatid}/`)
+		     .then(
+		     		response=>response.json()
+		     	  )
+		     .then(
+		     		response=>{
+		     				    if(response.message=="error")
+		     				    	showModal_k("Failed","Failed to delete the reply");
+		     				  }
+		     	  )
+		     .catch(err=>
+		     	         {
+		     	         	console.log(err);
+		     	         	showModal_k("error","error at front end");
+		     	         }
+		     	   );
+		return true;
+	}
+function updateLikesServer(msg_id,is_msg,is_like)
+	{
+		let msg={"msg_id":msg_id,"is_msg":is_msg,"is_like":is_like};
+		fetch("../postlikes/",
+							 {
+    		               	method:"POST",
+    		               	body:JSON.stringify(msg),
+    		               	headers: {
+    		               			 "content-type":"application/json",
+    	                             "X-CSRFToken":getCookie('csrftoken'),
+    		               			 },
+		                     }
+			 )
+		     .then(
+		     		response=>{
+		     			       // console.log(response);
+		     			       return response.json();
+		     			      }
+		     	  )
+		     .then(
+		     	    (response)=>
+		     	                {
+		     	                	if(response.message!="ok")
+		     	                		showModal_k("error",response.details);
+		     	                }
+		     	  )
+		     .catch(err=>
+		     	         {
+		     	         	console.log(err);
+		     	         	showModal_k("error","error at front end");
+		     	         }
+		     	   );
+
+	}
+
+function removeOldChats(discardedMessages)
+	{
+		for(var discardedMsg of discardedMessages)
+			discardedMsg.remove();
+	}
 function dynamicChat()
 	{
 		// console.log(hidden_replies);
@@ -8,7 +134,7 @@ function dynamicChat()
 		fetch("../chat_json/")
 		     .then(response=>{
 		     	             //console.log(response);
-		     	             return response.json()
+		     	             return response.json();
 		     	             }
 		     	  )
 		     .then((resp)=>
@@ -40,6 +166,7 @@ function scanForChanges(chats)
 		var chatbox_containers=document.getElementsByClassName("chatbox-container");
 		//loop over each chatbox container		
 		var oldChatsList=[];
+		var discardedMessages=[];
 		for(var i=0;i<chatbox_containers.length;i++)
 		{
 			var sender=chatbox_containers[i].querySelector("#fwhom").innerHTML;
@@ -47,6 +174,8 @@ function scanForChanges(chats)
 			var msg_content=chatbox_containers[i].querySelector("#msgconx").innerHTML;
 			var numlikes=chatbox_containers[i].querySelector("#nlikes").innerHTML;
 			var numdislikes=chatbox_containers[i].querySelector("#ndislikes").innerHTML;
+
+			var msg_id=chatbox_containers[i].querySelector("#msgid").innerHTML;
 
 			try{
             var replyMasterContainer=chatbox_containers[i].getElementsByClassName("replyset")[0]
@@ -61,45 +190,59 @@ function scanForChanges(chats)
             for(var l in chats)
             {
             	chat=chats[l];
-            	if(
-            		chat.from_whom==sender &&
-            		(new Date(chat.sent_when).toLocaleDateString("en-GB"))==sendDate &&
-            		chat.msg_content==msg_content 
-            	  )
+            	if(chat.id==msg_id)
             		{
-            			if(chatbox_containers[i].querySelector("#nlikes").innerHTML!="likes "+chat.likes)
-            				chatbox_containers[i].querySelector("#nlikes").innerHTML="likes "+chat.likes;
-            			if(chatbox_containers[i].querySelector("#ndislikes").innerHTML!= "dislikes "+chat.dislikes)
-            				chatbox_containers[i].querySelector("#ndislikes").innerHTML= "dislikes "+chat.dislikes;
+            			// console.log(`${msg_content} is duplicate`);
+            			if(chatbox_containers[i].querySelector("#nlikes").innerHTML!=like_string+' '+chat.likes)
+            				chatbox_containers[i].querySelector("#nlikes").innerHTML=like_string+' '+chat.likes;
+            			if(chatbox_containers[i].querySelector("#ndislikes").innerHTML!= dislike_string+' '+chat.dislikes)
+            				chatbox_containers[i].querySelector("#ndislikes").innerHTML= dislike_string+' '+chat.dislikes;
             			checkReplies(reply_elems,chat.replies,replyMasterContainer);
             			found_flg=true;
             			oldChatsList.push(l);
             			break;
             		}
             }
+            if(!found_flg)
+            	discardedMessages.push(chatbox_containers[i]);
+
 
 		}
-
+		removeOldChats(discardedMessages);
 		for(var l in chats)
 		{
 			
 			if(oldChatsList.indexOf(l)!=-1)
 				continue;
-			// console.log('loading new chat');
+			// console.log('loading new chat'); 
+
 			chat=chats[l];
+			console.log(`${chat.msg_content} is new`);
             cntr+=1;
+
+            deleteString='<div class="mid-child font-weight-bold"> <a href="javascript:deleteChat('
+                         +chat.id+
+                         ')" id="del'+
+                         chat.id+
+                         '">Delete</a></div>';
+			if(document.querySelector("#prezuser").value!=chat.from_whom)
+				deleteString="";
+
 			chatString=`<div class="container border chatbox-container" id="cbcntr${cntr}">
 			                <div class="senderbox" id="senderbox">
 			                	<div class="left-child font-weight-bold" id="fwhom">${chat.from_whom}</div>
 		   						<div class="font-weight-bold" id="sdate">${new Date(chat.sent_when).toLocaleDateString('en-GB')}</div>
 		   					</div>
+		   					<div id="msgid" style="display:none;">${chat.id}</div>
 		   					<div id="msgconx">${chat.msg_content}</div>
 					   	    <div class="senderbox">
-					   			<div class="mid-child font-weight-bold" id="nlikes">likes ${chat.likes}</div>
-					   			<div class="mid-child font-weight-bold" id="ndislikes">dislikes ${chat.dislikes}</div>
+					   			<div class="mid-child font-weight-bold chat_${chat.id}" id="nlikes">${like_string} ${chat.likes}</div>
+					   			<div class="mid-child font-weight-bold chat_${chat.id}" id="ndislikes">${dislike_string} ${chat.dislikes}</div>
 					   			<div class="mid-child font-weight-bold">
 					   			    <a href="javascript:revealReplies(${cntr})" id="replylink${cntr}">view replies</a>
 					   			</div>
+					   			${deleteString}
+
 						   	</div>
 		   							
 		   					<div id="reply${cntr}" class="replyset" >	
@@ -119,6 +262,8 @@ function scanForChanges(chats)
     					</div>`;
 
     		document.querySelector("#chatContainer").innerHTML+=chatString;
+    		// if(document.querySelector("#prezuser").value!=chat.from_whom)
+    		// 	document.querySelector(`#del${chat.id}`).style.display='none';
     		
     		// var elemxx=document.getElementsByClassName("chatbox-container");
     		// var elemxx=document.getElementById("cbcntr"+cntr);
@@ -139,6 +284,7 @@ function checkReplies(replyClass,replies,replyMasterContainer,newReplyset=false)
         
 		if(!newReplyset)
 		{
+			var discardedMessages=[];
 			for(var i=0;i<replyClass.length;i++)
 			{
 				var sender=replyClass[i].querySelector("#fwhom").innerHTML;			
@@ -147,21 +293,22 @@ function checkReplies(replyClass,replies,replyMasterContainer,newReplyset=false)
 				var rlikes=replyClass[i].querySelector("#rlikes").innerHTML;
 				var rdislikes=replyClass[i].querySelector("#rdislikes").innerHTML;
 
+				var rep_id=replyClass[i].querySelector("#rlyid").innerHTML;
+
+
 	            var found_flg=false;
 	            
 				for(var k in replies)
 				{
 					reply=replies[k];
-					if( reply.from_whom==sender &&
-						(new Date(reply.sent_when).toLocaleDateString("en-GB"))==datex &&
-						repcontent==reply.rly_content 
-					  )
+					if( reply.id==rep_id)
 					{
                         // console.log(`${repcontent} is duplicate`);
-						if(replyClass[i].querySelector("#rlikes").innerHTML!="likes "+reply.likes)
-							replyClass[i].querySelector("#rlikes").innerHTML="likes "+reply.likes;
-						if(replyClass[i].querySelector("#rdislikes").innerHTML!="dislikes "+reply.dislikes)
-							replyClass[i].querySelector("#rdislikes").innerHTML="dislikes "+reply.dislikes;
+                       
+						if(replyClass[i].querySelector("#rlikes").innerHTML!=rlike_string+' '+reply.likes)
+							replyClass[i].querySelector("#rlikes").innerHTML=rlike_string+' '+reply.likes;
+						if(replyClass[i].querySelector("#rdislikes").innerHTML!=rdislike_string+' '+reply.dislikes)
+							replyClass[i].querySelector("#rdislikes").innerHTML=rdislike_string+' '+reply.dislikes;
 						found_flg=true;
 						oldChatsList.push(k);
 						// break;
@@ -170,8 +317,11 @@ function checkReplies(replyClass,replies,replyMasterContainer,newReplyset=false)
 				if(!found_flg)
 				{
 					//delete those chats that were not found in the response
+					discardedMessages.push(replyClass[i]);
 				}
 			}
+			removeOldChats(discardedMessages);
+
 		}
          
 		//set up new chats that are absent in oldChatsList
@@ -181,16 +331,26 @@ function checkReplies(replyClass,replies,replyMasterContainer,newReplyset=false)
 			
 			if(oldChatsList.indexOf(k)!=-1)
 				continue;
-		// console.log(`loading new reply,${reply.rly_content}`);
+		console.log(`loading new reply,${reply.rly_content}`);
+
+		let deleteString=`<div class="mid-child font-weight-bold">
+					   			<a href="javascript:deleteReply(${reply.id})" id="del${reply.id}">Delete</a>
+					   		</div>`;
+		if(document.querySelector("#prezuser").value!=reply.from_whom)
+				deleteString="";
+
 		let chatString=`<div class="replybox-container" >
 			               <div class="senderbox" id="senderbox">
 			   			    <span class="left-child font-weight-bold" id="fwhom">${reply.from_whom}</span>
 	              		    <span class="font-weight-bold" id="fdate">${new Date(reply.sent_when).toLocaleDateString('en-GB')}</span>
 			   		       </div>
+			   		       <div id="rlyid" style="display:none;">${reply.id}</div>
 				   		   <div class="msgcontent" id="repcontent">${reply.rly_content}</div>
 				   		   <div class="senderbox">
-				   			<span class="mid-child font-weight-bold" id="rlikes">likes ${reply.likes}</span>
-		              		<span class="mid-child font-weight-bold" id="rdislikes">dislikes ${reply.dislikes}</span>
+				   			<span class="mid-child font-weight-bold chat_${reply.id}" id="rlikes">${rlike_string} ${reply.likes}</span>
+		              		<span class="mid-child font-weight-bold chat_${reply.id}" id="rdislikes">${rdislike_string} ${reply.dislikes}</span>
+		              				              		
+		              		${deleteString}
 				   		   </div>
 			             </div>`;
 			             
@@ -248,8 +408,8 @@ function loadChats(chats)
 							   		  </div>
 								   		<div class="msgcontent" id="repcontent">${reply.rly_content}</div>
 								   		<div class="senderbox">
-								   			<span class="mid-child font-weight-bold" id="rlikes">likes ${reply.likes}</span>
-						              		<span class="mid-child font-weight-bold" id="rdislikes">dislikes ${reply.dislikes}</span>
+								   			<span class="mid-child font-weight-bold" id="rlikes">${like_string} ${reply.likes}</span>
+						              		<span class="mid-child font-weight-bold" id="rdislikes">${dislike_string} ${reply.dislikes}</span>
 								   		</div>`;
 						chatString+='</div>';
 		   				

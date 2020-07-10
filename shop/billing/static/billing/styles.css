@@ -1,3 +1,13 @@
+:root {
+  --bg: linear-gradient(  
+    90deg,
+    #e6f5ff 0%,
+    #b3e0ff 43%,
+    #99e6e6 100%
+  );
+  
+}
+
 #bdcena{
   background-image: url("images/cena.jpg");
   background-repeat: no-repeat;
@@ -138,6 +148,12 @@
   justify-content: space-around;
   align-items: flex-start;
   border-radius: 5%;
+}
+
+.bbtn{
+  cursor: pointer;
+  border:none;
+  background-color: var(--bg);
 }
 
 

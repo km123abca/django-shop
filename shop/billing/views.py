@@ -7,19 +7,20 @@ from django.views.generic import View
 from django.http import HttpResponse,JsonResponse
 from .forms import UserForm,UserFormLogin
 from .models import *
-import json
+import json,sys
 
 # Create your views here.
 
 
 def index(request):
     # return HttpResponse("<h1>Hello World</h1>")
-    print(request.user)
+    # print(request.user)
     # if request.user is None or request.user=="AnonymousUser":
     if not request.user.is_authenticated:    
         return redirect('billing:login')
     else:
-        us=request.user        
+        us=request.user  
+        # print(us.id)      
         return render(request, 'billing/index.html',
                     {
                         "msg": "Alright Friend lets embark on another beautiful journey together",
@@ -52,7 +53,8 @@ def chat_json(request):
                           "rly_content":reply.rly_content,
                           "sent_when":reply.sent_when,
                           "likes":reply.likes,
-                          "dislikes":reply.dislikes
+                          "dislikes":reply.dislikes,
+                          "id":reply.id,
             }) 
         jsonChats.append({"from_whom":chat.from_whom,
                           "msg_content":chat.msg_content,
@@ -82,6 +84,91 @@ def postchat(request):
     # else:
     #     return HttpResponse("<h1>That was a get request</h1>")
 
+def dummy_response(request):
+    return HttpResponse('{"message":"error"}')
+
+def deleteMainChat(request,chatid):
+             
+    msg=Chat_message.objects.get(pk=chatid)
+    if msg.from_whom==str(request.user):
+        print("about to delete message")
+        msg.delete()
+        return HttpResponse('{"message":"ok"}')
+    else:        
+        return HttpResponse('{"message":"error"}')
+
+def deleteReply(request,chatid):
+             
+    msg=Reply_to_messages.objects.get(pk=chatid)
+    if msg.from_whom==str(request.user):
+        print("about to delete message")
+        msg.delete()
+        return HttpResponse('{"message":"ok"}')
+    else:        
+        return HttpResponse('{"message":"error"}')
+
+def post_likes_dislikes(request):
+    # print("here")
+    try:
+        if request.method=='POST':
+            # print("here here")
+            body_content=json.loads(request.body.decode('utf-8'))
+            msg_id=body_content["msg_id"]
+            is_msg=bool(body_content["is_msg"])
+            is_like=bool(body_content["is_like"])
+            if not(is_msg) and is_like:
+                print("reply:"+msg_id)
+
+            if is_msg:
+                msg=Chat_message.objects.get(pk=msg_id)
+                prev_likes=Chat_message_likes.objects.all().filter(chat_message_id=msg_id,is_like=True)
+                prev_dislikes=Chat_message_likes.objects.all().filter(chat_message_id=msg_id,is_like=False)
+                if is_like and len(prev_dislikes)!=0:
+                    prev_dislikes[0].delete()
+                    msg.dislikes-=1                    
+                elif is_like and len(prev_likes)==0:
+                    msg.likes+=1
+                    new_entry=Chat_message_likes(chat_message_id=msg_id,from_whom_like_id=request.user.id,is_like=True)
+                    new_entry.save()
+                elif not(is_like) and len(prev_likes)!=0:
+                    prev_likes[0].delete()
+                    msg.likes-=1
+                elif not(is_like) and len(prev_dislikes)==0:
+                    msg.dislikes+=1
+                    new_entry=Chat_message_likes(chat_message_id=msg_id,from_whom_like_id=request.user.id,is_like=False)
+                    new_entry.save()
+                msg.save()
+            else:
+                try:
+                    msg=Reply_to_messages.objects.get(pk=msg_id)                                       
+                except:
+                    return HttpResponse('{"message":"error","details":"error at line 127"}')
+                prev_likes=Reply_message_likes.objects.all().filter(reply_message_id=msg_id,is_like=True) 
+                prev_dislikes=Reply_message_likes.objects.all().filter(reply_message_id=msg_id,is_like=False)
+                if is_like and len(prev_dislikes)!=0:
+                    prev_dislikes[0].delete()
+                    msg.dislikes-=1                    
+                elif is_like and len(prev_likes)==0:
+                    msg.likes+=1
+                    new_entry=Reply_message_likes(reply_message_id=msg_id,from_whom_like_id=request.user.id,is_like=True)
+                    new_entry.save()
+                elif not(is_like) and len(prev_likes)!=0:
+                    prev_likes[0].delete()
+                    msg.likes-=1
+                elif not(is_like) and len(prev_dislikes)==0:
+                    msg.dislikes+=1
+                    new_entry=Reply_message_likes(reply_message_id=msg_id,from_whom_like_id=request.user.id,is_like=False)
+                    new_entry.save()
+                msg.save()
+            
+            return HttpResponse('{"message":"ok"}')
+    except:
+        # print("Unexpected error:", sys.exc_info()[0])  
+
+        ret_err={"message":"error","details":"Backend Error is unknown"}
+        ret_err=json.dumps(ret_err)
+       
+        return HttpResponse(ret_err)
 def postchat_reply(request):
     if request.method=='POST':
         body_content=json.loads(request.body.decode('utf-8'))
