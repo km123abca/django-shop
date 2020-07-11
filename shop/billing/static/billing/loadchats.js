@@ -40,6 +40,15 @@ function updaterdislikes(elem)
 		updateLikesServer(chatid,0,0);
 	}
 
+function showEdit(cnt)
+	{
+		let elem=document.querySelector('#editFormx'+cnt);
+		if(elem.style.display=='block')
+			elem.style.display='none';
+		else
+			elem.style.display='block';
+	}
+
 function deleteChat(chatid)
 	{ 
 		//todo write the delete chat script here
@@ -143,7 +152,7 @@ function dynamicChat()
 		     	           // loadChats(resp);
 		     	           scanForChanges(resp);
 		     	           loadEventListeners();
-		     	          // loadEventListeners_editforms(); kmhere pickup
+		     	          loadEventListeners_editforms(); 
 		     	           }
 		     	  )
 		     .catch(err=>
@@ -198,6 +207,10 @@ function scanForChanges(chats)
             				chatbox_containers[i].querySelector("#nlikes").innerHTML=like_string+' '+chat.likes;
             			if(chatbox_containers[i].querySelector("#ndislikes").innerHTML!= dislike_string+' '+chat.dislikes)
             				chatbox_containers[i].querySelector("#ndislikes").innerHTML= dislike_string+' '+chat.dislikes;
+
+            			if(chatbox_containers[i].querySelector('#msgconx').innerHTML!=chat.msg_content)
+            				chatbox_containers[i].querySelector('#msgconx').innerHTML=chat.msg_content;
+
             			checkReplies(reply_elems,chat.replies,replyMasterContainer);
             			found_flg=true;
             			oldChatsList.push(l);
@@ -226,8 +239,14 @@ function scanForChanges(chats)
                          ')" id="del'+
                          chat.id+
                          '">Delete</a></div>';
+            editString=`<div class="mid-child font-weight-bold">
+            				<a href="javascript:showEdit(${cntr})">Edit</a>
+                        </div>`;
 			if(document.querySelector("#prezuser").value!=chat.from_whom)
-				deleteString="";
+				{
+					deleteString="";
+					editString="";
+		        }
 
 			chatString=`<div class="container border chatbox-container" id="cbcntr${cntr}">
 			                <div class="senderbox" id="senderbox">
@@ -243,12 +262,12 @@ function scanForChanges(chats)
 					   			    <a href="javascript:revealReplies(${cntr})" id="replylink${cntr}">view replies</a>
 					   			</div>
 					   			${deleteString}
-
+					   			${editString}
 						   	</div>
 
-						   	<div class="container editFormx" id="editFormx">
+						   	<div class="container editFormx" id="editFormx${cntr}" style="display:none;">
 							    <form action="" id="edit-form"  class="edit-win" method="post"> 
-							           	  
+							        <input type="hidden" name="counterx" value="${cntr}" />  
 	  								<input type="hidden" name="user" value="${userx}" />
 	  								<input type="hidden" name="parentid" value="${chat.id}" />
 	  						        <input type='text' class='editmsg' id='editmsg' name='editmsg' value='${chat.msg_content}' />
@@ -560,7 +579,7 @@ function loadEventListeners()
 
 function loadEventListeners_editforms()
 	{   
-		var editForms=document.getElementsByClassName('editFormx');
+		var editForms=document.getElementsByClassName('edit-win');
 
         // var replyForms=[];
         
@@ -584,6 +603,7 @@ function loadEventListeners_editforms()
 				                        	const msgToSend=formData.get("editmsg");
 				                        	const user=formData.get("user");
 				                        	const parentid=formData.get("parentid");
+				                        	const counterx=formData.get("counterx");
 				                        	const msg={"msg":msgToSend,"user":user,"chatid":parentid};
 				                        	// const csrft=formData.get("csrfmiddlewaretoken");
 		                        	        //console.log(csrft);
@@ -602,9 +622,14 @@ function loadEventListeners_editforms()
 				                        	.then(response=>response.json())
 				                        	.then( (resp)=>
 				                        		           {
+
 				                        			       // document.querySelector('#warn-i').innerHTML=resp.message;
 				                        			       // showModal_k("Done",resp.message);
-				                        			       form.reset();
+				                        			       // form.reset();
+				                        			       if(resp.message=="noauth")
+				                        			       	showModal_k("Unauthorized","you cant edit something that you havent posted");
+				                        			       else
+				                        			       	document.querySelector('#editFormx'+counterx).style.display="none";
 				                        			       }
 				                        		 )
 				                        	.catch(err=>

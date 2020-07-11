@@ -91,15 +91,17 @@ def editChat(request):
     if request.method=='POST':            
         body_content=json.loads(request.body.decode('utf-8'))
         chatid=body_content["chatid"]
-        user=body_content["user"]
+        userl=body_content["user"]
         msg=body_content["msg"]
-        if user==str(request.user):
-            chatMod=Chat_message.objects.get(pk=chatid)
+        # print(userl)
+        # print(str(request.user))
+        chatMod=Chat_message.objects.get(pk=chatid)
+        if userl==chatMod.from_whom:            
             chatMod.msg_content=msg
             chatMod.save()
             return HttpResponse('{"message":"ok"}')
         else:
-            return HttpResponse('{"message":"error"}')
+            return HttpResponse('{"message":"noauth"}')
     return HttpResponse('{"message":"error"}')
 
 def deleteMainChat(request,chatid):
